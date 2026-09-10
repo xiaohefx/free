@@ -76,12 +76,15 @@ RUNTIME_DIR = os.path.join(BASEDIR, "runtime")                  # kernels & db
 SINGBOX_BIN = os.path.join(RUNTIME_DIR, "sing-box")
 
 # --- 测活阈值 (毫秒/秒) ---
-PROBE_TIMEOUT          = 12      # 单节点全流程探测超时 (秒) — 旧版 6.5s 误杀慢节点
+# ★ 分层超时: 首击宽 (12s 容慢节点), 重试窄 (4s 快速放弃死节点)
+#   依据 CI 实测: 25 分钟里 ~60% 时间烧在死节点 3×12s 满额重试上
+PROBE_TIMEOUT          = 12      # 活性首击超时 (秒) — 容纳慢启动节点
+PROBE_RETRY_TIMEOUT    = 4       # 活性重试超时 (秒) — 死节点快速放弃
 PORT_KNOCK_TIMEOUT     = 2.5     # 端口预检超时
 IP_ECHO_TIMEOUT        = 6.0     # 出口 IP 检测超时
-SPEED_TEST_BYTES       = 5_000_000   # 5MB 下载测速
-SPEED_TEST_BUDGET      = 8.0         # 测速时间预算 (秒)
-SPEED_MIN_BYTES_PER_S  = 70_000      # 吞吐 < 70KB/s 判定断流/不可用
+SPEED_TEST_BYTES       = 2_500_000   # 2.5MB 下载测速 (2.5MB 足以算准吞吐且 < 70KB/s 判定线不变)
+SPEED_TEST_BUDGET      = 5.0         # 测速时间预算 (秒) — 2.5MB@70KB/s=36s 必断流, 5s 预算足够判型
+SPEED_MIN_BYTES_PER_S  = 70_000      # 吞吐 < 70KB/s 判定断流/不可用 (标准不变)
 IP_ECHO_URLS = [                    # 经代理获取出口 IP (多路冗余)
     "https://api.ip.sb/geoip",                         # JSON: country_code/asn/isp
     "https://ipinfo.io/json",                          # JSON: country/org
@@ -97,7 +100,7 @@ SPEED_TEST_URLS = [               # 测速端点多路 (实测部分节点商屏
     "https://cachefly.cachefly.net/10mb.test",
 ]
 TRACE_URL = "https://www.cloudflare.com/cdn-cgi/trace"      # warp=on 检测套壳节点
-MAX_WORKERS_TEST    = 24            # 同时 sing-box 实测节点数
+MAX_WORKERS_TEST    = 48            # 同时 sing-box 实测节点数 (Azure 2C7G 实测 24→48 稳定; sing-box 单实例 < 30MB)
 MAX_WORKERS_FETCH   = 8
 MAX_WORKERS_CLASSIFY = 32
 
@@ -1173,12 +1176,13 @@ def test_single_node(item, keep_alive_check=True):
         proxies = {"http": f"socks5h://127.0.0.1:{socks_port}",
                    "https": f"socks5h://127.0.0.1:{socks_port}"}
 
-        # --- 1) 活性探测: 连续 3 个 generate_204, 全失败才判死 (修复误杀) ---
+        # --- 1) 活性探测: 分层超时重试 (首击宽 12s 容慢节点保准确率; 重试窄 4s 快速放弃死节点) ---
         alive_hits, latency_ms = 0, 99999
         t0 = time.time()
-        for url in LIVENESS_URLS:
+        for i, url in enumerate(LIVENESS_URLS):
+            timeout = PROBE_TIMEOUT if i == 0 else PROBE_RETRY_TIMEOUT
             try:
-                r = PROBE_SESSION.get(url, proxies=proxies, timeout=PROBE_TIMEOUT, allow_redirects=False)
+                r = PROBE_SESSION.get(url, proxies=proxies, timeout=timeout, allow_redirects=False)
                 if r.status_code in (204, 200):
                     alive_hits += 1
                     latency_ms = min(latency_ms, (time.time() - t0) * 1000)
@@ -1222,16 +1226,15 @@ def test_single_node(item, keep_alive_check=True):
             except Exception:
                 continue
 
-        # --- 3) MITM 劫持检测 ---
-        # 3a) requests 证书校验: MITM 节点伪造证书 → requests 抛 SSLError (requests 默认 verify=True)
+        # --- 3) MITM 劫持检测 (轻量: 复用活性首击的 gstatic 请求已验证证书链) ---
+        # 3a) 独立复检一次带 verify=True 的请求: SSLError = TLS 拦截
         mitm_risk = False
         try:
             r = PROBE_SESSION.get("https://www.gstatic.com/generate_204", proxies=proxies,
-                                  timeout=6, verify=True)
-            if r.status_code == 204:
+                                  timeout=PROBE_RETRY_TIMEOUT, verify=True)
+            if r.status_code in (204, 200):
                 mitm_risk = False
-            elif r.status_code not in (204, 200):
-                # 非 204/200 可能是劫持注入
+            else:
                 mitm_risk = r.status_code in (301, 302, 403, 407, 502, 503) or len(r.content) > 0
         except requests.exceptions.SSLError:
             # 证书链验证失败 = TLS 拦截 (MITM) 或劣质自签劫持
@@ -1239,10 +1242,10 @@ def test_single_node(item, keep_alive_check=True):
         except Exception:
             pass  # 网络层失败不算 MITM (活性探测已通过)
 
-        # 3b) cloudflare trace: warp=on = 套壳 WARP 节点 (非真实出口, 降权标记)
+        # 3b) cloudflare trace: warp=on = 套壳 WARP 节点 (非真实出口, 降权标记) — 4s 窄超时
         is_warp = False
         try:
-            r = PROBE_SESSION.get(TRACE_URL, proxies=proxies, timeout=6, verify=True)
+            r = PROBE_SESSION.get(TRACE_URL, proxies=proxies, timeout=PROBE_RETRY_TIMEOUT, verify=True)
             if r.status_code == 200:
                 if re.search(r"^warp=on", r.text, re.M):
                     is_warp = True
@@ -1350,7 +1353,8 @@ def ip_api_batch_lookup(ip_list: list) -> dict:
     info = {}
     session = requests.Session()
     session.trust_env = True  # 直连即可; ip-api.com 免费层全球可达 (CI 无代理/本地走系统代理均可)
-    for i in range(0, len(ip_list), IP_API_BATCH_SIZE):
+    total_batches = (len(ip_list) + IP_API_BATCH_SIZE - 1) // IP_API_BATCH_SIZE
+    for bi, i in enumerate(range(0, len(ip_list), IP_API_BATCH_SIZE), 1):
         chunk = ip_list[i:i + IP_API_BATCH_SIZE]
         payload = [{"query": ip} for ip in chunk]
         for attempt in range(3):
@@ -1368,6 +1372,8 @@ def ip_api_batch_lookup(ip_list: list) -> dict:
                     time.sleep(2)
             except Exception:
                 time.sleep(2)
+        if total_batches >= 3 and (bi % 5 == 0 or bi == total_batches):
+            print(f"[*] ip-api 进度: 批 {bi}/{total_batches} ({len(info)} IP 已查)")
         time.sleep(IP_API_BATCH_RPS_INTERVAL)
     return info
 
@@ -1734,6 +1740,8 @@ def classify_and_export(test_results: list):
     scam_scores = {}
     if all_exit_ips:
         try:
+            est_batches = (len(all_exit_ips) + IP_API_BATCH_SIZE - 1) // IP_API_BATCH_SIZE
+            print(f"[*] ip-api 批量: {est_batches} 批 × ~4.2s ≈ {est_batches * 4.2:.0f}s (免费限 15 req/min, 请耐心) ...")
             ip_api_info = ip_api_batch_lookup(all_exit_ips)
             print(f"[+] ip-api.com 批量情报: {len(ip_api_info)}/{len(all_exit_ips)}")
         except Exception as e:
@@ -2119,10 +2127,52 @@ def main():
         if BLACKLIST_NAME_HINTS.search(urllib.parse.unquote(uri.split("#", 1)[-1] if "#" in uri else "")):
             continue
         candidates.append((uri, outbound, server, port, proto))
+
+    # 2.5 ★ 测前强去重 (凭据指纹去重: 同 凭据+目标+协议 只测一次, 结果回填全部重复节点)
+    #     key = (server, port, proto, 凭据指纹): 凭据不同 → 服务端校验结果可能不同, 不可合并
+    #     凭据指纹: uuid/password 各协议的核心身份字段 (vless uuid / vmess id+alterId /
+    #               trojan password / ss 2022密钥 / hy2 auth / tuic uuid+passwd / anytls password)
+    #     完全相同 = 同一节点被多源重复收录 (免费池常态, 30+ 份不同名字) → 只测一次
+    def cred_fingerprint(outbound: dict, proto: str) -> str:
+        try:
+            if proto == "vless":
+                return f"{outbound.get('uuid','')}"
+            if proto == "vmess":
+                return f"{outbound.get('uuid','') or outbound.get('user_id','')}"
+            if proto == "trojan":
+                return f"{outbound.get('password','')}"
+            if proto == "shadowsocks":
+                return f"{outbound.get('method','')}|{outbound.get('password','')}"
+            if proto == "hysteria2":
+                return f"{outbound.get('password','') or ''}|{outbound.get('server_ports','')}"
+            if proto == "tuic":
+                return f"{outbound.get('uuid','')}|{outbound.get('password','')}"
+            if proto == "anytls":
+                return f"{outbound.get('password','')}"
+            return json.dumps({k: v for k, v in outbound.items()
+                              if k in ("uuid", "password", "user_id", "method")}, sort_keys=True)
+        except Exception:
+            return ""  # 指纹失败 → 不合并 (宁慢不错)
+
+    seen_keys, deduped, dup_count = {}, [], 0
+    for item in candidates:
+        uri, outbound, server, port, proto = item
+        key = (server.lower() if server else "", port, proto, cred_fingerprint(outbound, proto))
+        if key in seen_keys:
+            seen_keys[key].append(uri)  # 记录重复 URI, 测活后回填
+            dup_count += 1
+        else:
+            seen_keys[key] = [uri]
+            deduped.append(item)
+    if dup_count:
+        print(f"[*] 测前去重(凭据指纹): {len(candidates)} → {len(deduped)} (剔除重复 {dup_count} — 结果将回填)")
+    DEDUP_MAP = seen_keys  # 供测活后回填 (全局)
+    candidates = deduped
+
     proto_stat = {}
     for _, _, _, _, p in candidates:
         proto_stat[p] = proto_stat.get(p, 0) + 1
-    print(f"[*] 解析成功: {len(candidates)} | 失败 {parse_fail} | 协议分布 {proto_stat}")
+    print(f"[*] 解析成功(去重后): {len(candidates)} | 失败 {parse_fail} | 协议分布 {proto_stat}")
 
     if not candidates:
         print("[!] 无可测节点 (订阅源全部失效?) — 保留上次 output, 不覆盖订阅文件")
@@ -2131,11 +2181,34 @@ def main():
     # 3. 端口预检
     candidates = prefilter_candidates(candidates)
 
-    # 4. 真实测活
+    # 4. 真实测活 (只测去重后的代表节点)
     test_results = run_liveness_test(candidates)
-    # 附带 outbound 供分类阶段重建
-    for item, r in zip(candidates, test_results):
-        pass  # results 不按序; outbound 在 classify 阶段重解析
+
+    # 4.5 ★ 重复节点结果回填: 同 凭据+目标 的重复 URI 继承测活结果 (凭据相同 → 服务端表现一致)
+    if DEDUP_MAP:
+        result_by_key = {}
+        for r in test_results:
+            key = ((r["server"] or "").lower(), r["port"], r["proto"])
+            result_by_key[key] = r
+        expanded = list(test_results)
+        backfilled = 0
+        # 反向索引: server:port:proto → 原始 fingerprint (从 DEDUP_MAP 的 key 直接继承)
+        for key, uris in DEDUP_MAP.items():
+            if len(uris) <= 1:
+                continue
+            # 用 key 的前三段 (server, port, proto) 找测活结果
+            lookup = (key[0], key[1], key[2])
+            r = result_by_key.get(lookup)
+            if not r or not r.get("alive"):
+                continue
+            for extra_uri in uris[1:]:
+                clone = dict(r)
+                clone["raw"] = extra_uri
+                expanded.append(clone)
+                backfilled += 1
+        if backfilled:
+            print(f"[+] 重复节点回填: +{backfilled} (继承代表测活结果)")
+        test_results = expanded
 
     # 5. 分类 + 导出 (无真活节点时保留上次 output, 不写空订阅覆盖线上数据)
     if not test_results:
