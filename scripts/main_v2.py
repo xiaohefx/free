@@ -435,12 +435,49 @@ def parse_host_port(hostinfo: str):
 # 环境准备 (sing-box / GeoLite)
 # ══════════════════════════════════════════════════════════════════
 
-def download_file(url: str, dest: str, timeout: int = 300):
+def download_file(url: str, dest: str, timeout: int = 300, retries: int = 3):
+    """下载文件到本地; 分块流式 + 原子替换 + 重试 + 镜像切换
+    (GitHub 直连失败自动尝试 jsdelivr 镜像 — 本地大陆网络/CI 偶发限流都更稳)"""
     if os.path.exists(dest) and os.path.getsize(dest) > 1024:
         return
+    # 镜像: github.com/OWNER/REPO/... → cdn.jsdelivr.net/gh/OWNER/REPO@...
+    mirrors = [url]
+    m = re.match(r"^https://(?:github\.com|raw\.githubusercontent\.com)/([^/]+)/([^/]+)/(?:raw|releases/download)/(.+)$", url)
+    if m and "releases/download" not in url:
+        owner, repo, path = m.groups()
+        mirrors.append(f"https://cdn.jsdelivr.net/gh/{owner}/{repo.replace('.git','')}@{path}")
     print(f"[*] 下载: {url}")
-    with http_get(url, timeout=timeout, headers={"Accept": "*/*"}).raw as raw, open(dest, "wb") as f:
-        shutil.copyfileobj(raw, f)
+    tmp = dest + ".part"
+    last_err = None
+    for mirror in mirrors:
+        for attempt in range(retries):
+            try:
+                with DIRECT_SESSION.get(mirror, timeout=timeout, stream=True,
+                                        headers={"Accept": "*/*"}) as r:
+                    r.raise_for_status()
+                    with open(tmp, "wb") as f:
+                        for chunk in r.iter_content(chunk_size=1 << 20):
+                            if chunk:
+                                f.write(chunk)
+                if os.path.getsize(tmp) < 1024:
+                    raise RuntimeError(f"下载不完整: {os.path.getsize(tmp)} bytes")
+                os.replace(tmp, dest)
+                return
+            except Exception as e:
+                last_err = e
+                if attempt < retries - 1:
+                    wait = 3 * (attempt + 1)
+                    print(f"[!] 下载失败 (第{attempt+1}次): {str(e)[:70]} — {wait}s 后重试")
+                    time.sleep(wait)
+        if len(mirrors) > 1 and mirror != mirrors[-1]:
+            print(f"[!] 切换镜像: {mirrors[1]}")
+    # 清理失败的半截文件
+    try:
+        if os.path.exists(tmp):
+            os.remove(tmp)
+    except OSError:
+        pass
+    raise RuntimeError(f"下载最终失败 ({mirrors[0]}): {last_err}")
 
 
 def setup_environment():
