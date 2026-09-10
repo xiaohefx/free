@@ -15,28 +15,27 @@ proxies:
     public-key: R06_DTSjzQI9DswvRz9OqSBECfSwlpCMPR4DCc9oXyw
     short-id: c0cb7457deebbc70
   servername: www.apple.com
-  client-fingerprint: chrome
+  client-fingerprint: firefox
 - name: 🇮🇳 印度 (India) 02 - xiaohe
-  server: 148.113.5.44
-  port: 443
-  udp: true
-  type: vless
-  uuid: 72ea5a91-ffcc-43d2-9297-5993c3abf186
-  flow: xtls-rprx-vision
-  tls: true
-  reality-opts:
-    public-key: QLjTpkXRB453R9fXhJzKkc_q_gSm2MZrIOuxW4uW-mI
-    short-id: 221873918e0bb74d
-  servername: www.cloudflare.com
-  client-fingerprint: chrome
-- name: 🇮🇳 印度 (India) 03 - xiaohe
   server: vpn-in-001.fastervpn.world
   port: 443
   udp: true
   type: hysteria2
   password: H7mP2xY9kJ4nQ8wR5tF6vB3z
-  sni: 127.0.0.1
+  sni: vpn-in-001.fastervpn.world
   skip-cert-verify: true
+- name: 🇮🇳 印度 (India) 03 - xiaohe
+  server: india.shadowlos.top
+  port: 443
+  udp: true
+  type: vless
+  uuid: 170fb6f8-a34d-4f50-9275-e48ab47c58fd
+  tls: true
+  servername: india.shadowlos.top
+  skip-cert-verify: false
+  network: grpc
+  grpc-opts:
+    grpc-service-name: YPN65c1yiYLmpXbRn0lG
 proxy-groups:
 - name: PROXIES
   type: select
