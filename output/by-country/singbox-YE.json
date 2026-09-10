@@ -6,12 +6,24 @@
     {
       "type": "trojan",
       "tag": "🇾🇪 YE 01 - xiaohe",
+      "server": "z-jp1.1card.cc",
+      "server_port": 10010,
+      "password": "ultra@kWZdAzt_IH593eGLRjdxnBZ0",
+      "tls": {
+        "enabled": true,
+        "server_name": "z-jp1.1card.cc",
+        "insecure": true
+      }
+    },
+    {
+      "type": "trojan",
+      "tag": "🇾🇪 YE 02 - xiaohe",
       "server": "z-jp2.1card.cc",
       "server_port": 10010,
       "password": "ultra@kWZdAzt_IH593eGLRjdxnBZ0",
       "tls": {
         "enabled": true,
-        "server_name": "z-jp2.1card.cc",
+        "server_name": "www.cloudflare.com",
         "insecure": true
       }
     },
@@ -20,14 +32,16 @@
       "tag": "select",
       "outbounds": [
         "auto",
-        "🇾🇪 YE 01 - xiaohe"
+        "🇾🇪 YE 01 - xiaohe",
+        "🇾🇪 YE 02 - xiaohe"
       ]
     },
     {
       "type": "urltest",
       "tag": "auto",
       "outbounds": [
-        "🇾🇪 YE 01 - xiaohe"
+        "🇾🇪 YE 01 - xiaohe",
+        "🇾🇪 YE 02 - xiaohe"
       ],
       "url": "https://www.gstatic.com/generate_204"
     },

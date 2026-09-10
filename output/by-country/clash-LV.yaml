@@ -13,28 +13,6 @@ proxies:
   password: hbtvgUz5uNYyB3Rf
 - name: 🇱🇻 拉脱维亚 (Latvia) 02 - xiaohe
   server: 89.36.161.222
-  port: 2096
-  udp: true
-  type: vless
-  uuid: 70e20b2e-3b1f-4c25-9a3d-9240570391bb
-  network: ws
-  ws-opts:
-    path: /
-- name: 🇱🇻 拉脱维亚 (Latvia) 03 - xiaohe
-  server: 195.123.213.28
-  port: 443
-  udp: true
-  type: vless
-  uuid: 02fcc1a4-ee90-4970-8bbb-4ffaa8109d24
-  flow: xtls-rprx-vision
-  tls: true
-  reality-opts:
-    public-key: NMgy1XgCSXExOg6Tg8xG9lCWttMF6sjdpB41lZy6FWo
-    short-id: 5c256336e3b673fa
-  servername: www.cloudflare.com
-  client-fingerprint: chrome
-- name: 🇱🇻 拉脱维亚 (Latvia) 04 - xiaohe
-  server: 89.36.161.222
   port: 2083
   udp: true
   type: vless
@@ -42,11 +20,21 @@ proxies:
   tls: true
   servername: laoye.in-gect.fun
   skip-cert-verify: false
-  client-fingerprint: qq
   network: grpc
   grpc-opts:
     grpc-service-name: grpc
-- name: 🇱🇻 拉脱维亚 (Latvia) 05 - xiaohe
+- name: 🇱🇻 拉脱维亚 (Latvia) 03 - xiaohe
+  server: 89.36.161.222
+  port: 2096
+  udp: true
+  type: vless
+  uuid: 70e20b2e-3b1f-4c25-9a3d-9240570391bb
+  network: ws
+  ws-opts:
+    path: /
+    headers:
+      Host: laoye.in-gect.fun
+- name: 🇱🇻 拉脱维亚 (Latvia) 04 - xiaohe
   server: 89.36.161.222
   port: 2053
   udp: true
@@ -58,8 +46,8 @@ proxies:
     public-key: cGVu5j95KoeHBkWXveyTKolORbdvZm9g1T6yyo64ZBg
     short-id: d26f4703cdd30f4e
   servername: vk.ru
-  client-fingerprint: edge
-- name: 🇱🇻 拉脱维亚 (Latvia) 06 - xiaohe
+  client-fingerprint: firefox
+- name: 🇱🇻 拉脱维亚 (Latvia) 05 - xiaohe
   server: 138.124.180.137
   port: 443
   udp: true
@@ -72,8 +60,8 @@ proxies:
     short-id: 33acba1b
   servername: www.apple.com
   client-fingerprint: chrome
-- name: 🇱🇻 拉脱维亚 (Latvia) 07 - xiaohe
-  server: 95.182.90.226
+- name: 🇱🇻 拉脱维亚 (Latvia) 06 - xiaohe
+  server: nl.cloudtechone.org
   port: 443
   udp: true
   type: vless
@@ -96,7 +84,6 @@ proxy-groups:
   - 🇱🇻 拉脱维亚 (Latvia) 04 - xiaohe
   - 🇱🇻 拉脱维亚 (Latvia) 05 - xiaohe
   - 🇱🇻 拉脱维亚 (Latvia) 06 - xiaohe
-  - 🇱🇻 拉脱维亚 (Latvia) 07 - xiaohe
 - name: AUTO
   type: url-test
   url: https://www.gstatic.com/generate_204
@@ -108,6 +95,5 @@ proxy-groups:
   - 🇱🇻 拉脱维亚 (Latvia) 04 - xiaohe
   - 🇱🇻 拉脱维亚 (Latvia) 05 - xiaohe
   - 🇱🇻 拉脱维亚 (Latvia) 06 - xiaohe
-  - 🇱🇻 拉脱维亚 (Latvia) 07 - xiaohe
 rules:
 - MATCH,PROXIES

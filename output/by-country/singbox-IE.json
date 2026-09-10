@@ -6,7 +6,7 @@
     {
       "type": "shadowsocks",
       "tag": "🇮🇪 爱尔兰 (Ireland) 01 - xiaohe",
-      "server": "108.129.176.139",
+      "server": "63.32.92.226",
       "server_port": 443,
       "method": "aes-256-cfb",
       "password": "amazonskr05"
@@ -14,7 +14,7 @@
     {
       "type": "shadowsocks",
       "tag": "🇮🇪 爱尔兰 (Ireland) 02 - xiaohe",
-      "server": "3.254.74.220",
+      "server": "54.75.103.206",
       "server_port": 443,
       "method": "aes-256-cfb",
       "password": "amazonskr05"
@@ -28,17 +28,30 @@
       "password": "amazonskr05"
     },
     {
-      "type": "shadowsocks",
+      "type": "vless",
       "tag": "🇮🇪 爱尔兰 (Ireland) 04 - xiaohe",
-      "server": "54.75.103.206",
-      "server_port": 443,
-      "method": "aes-256-cfb",
-      "password": "amazonskr05"
+      "server": "3.9.135.156",
+      "server_port": 51847,
+      "uuid": "391a01e9-b664-407b-9158-610fab3f5920",
+      "flow": "xtls-rprx-vision",
+      "tls": {
+        "enabled": true,
+        "server_name": "www.tesla.com",
+        "utls": {
+          "enabled": true,
+          "fingerprint": "random"
+        },
+        "reality": {
+          "enabled": true,
+          "public_key": "S6noV0L8eNASnTe1gXLutLZNdfENsvKMsOJiGQYi6nc",
+          "short_id": "0eec442e7b34d2f2"
+        }
+      }
     },
     {
       "type": "shadowsocks",
       "tag": "🇮🇪 爱尔兰 (Ireland) 05 - xiaohe",
-      "server": "63.32.92.226",
+      "server": "3.254.74.220",
       "server_port": 443,
       "method": "aes-256-cfb",
       "password": "amazonskr05"
@@ -64,27 +77,6 @@
       }
     },
     {
-      "type": "vless",
-      "tag": "🇮🇪 爱尔兰 (Ireland) 07 - xiaohe",
-      "server": "3.9.135.156",
-      "server_port": 51847,
-      "uuid": "391a01e9-b664-407b-9158-610fab3f5920",
-      "flow": "xtls-rprx-vision",
-      "tls": {
-        "enabled": true,
-        "server_name": "www.tesla.com",
-        "utls": {
-          "enabled": true,
-          "fingerprint": "random"
-        },
-        "reality": {
-          "enabled": true,
-          "public_key": "S6noV0L8eNASnTe1gXLutLZNdfENsvKMsOJiGQYi6nc",
-          "short_id": "0eec442e7b34d2f2"
-        }
-      }
-    },
-    {
       "type": "selector",
       "tag": "select",
       "outbounds": [
@@ -94,8 +86,7 @@
         "🇮🇪 爱尔兰 (Ireland) 03 - xiaohe",
         "🇮🇪 爱尔兰 (Ireland) 04 - xiaohe",
         "🇮🇪 爱尔兰 (Ireland) 05 - xiaohe",
-        "🇮🇪 爱尔兰 (Ireland) 06 - xiaohe",
-        "🇮🇪 爱尔兰 (Ireland) 07 - xiaohe"
+        "🇮🇪 爱尔兰 (Ireland) 06 - xiaohe"
       ]
     },
     {
@@ -107,8 +98,7 @@
         "🇮🇪 爱尔兰 (Ireland) 03 - xiaohe",
         "🇮🇪 爱尔兰 (Ireland) 04 - xiaohe",
         "🇮🇪 爱尔兰 (Ireland) 05 - xiaohe",
-        "🇮🇪 爱尔兰 (Ireland) 06 - xiaohe",
-        "🇮🇪 爱尔兰 (Ireland) 07 - xiaohe"
+        "🇮🇪 爱尔兰 (Ireland) 06 - xiaohe"
       ],
       "url": "https://www.gstatic.com/generate_204"
     },

@@ -5,14 +5,14 @@ mode: rule
 log-level: info
 proxies:
 - name: 🇮🇪 爱尔兰 (Ireland) 01 - xiaohe
-  server: 108.129.176.139
+  server: 63.32.92.226
   port: 443
   udp: true
   type: ss
   cipher: aes-256-cfb
   password: amazonskr05
 - name: 🇮🇪 爱尔兰 (Ireland) 02 - xiaohe
-  server: 3.254.74.220
+  server: 54.75.103.206
   port: 443
   udp: true
   type: ss
@@ -26,14 +26,20 @@ proxies:
   cipher: aes-256-cfb
   password: amazonskr05
 - name: 🇮🇪 爱尔兰 (Ireland) 04 - xiaohe
-  server: 54.75.103.206
-  port: 443
+  server: 3.9.135.156
+  port: 51847
   udp: true
-  type: ss
-  cipher: aes-256-cfb
-  password: amazonskr05
+  type: vless
+  uuid: 391a01e9-b664-407b-9158-610fab3f5920
+  flow: xtls-rprx-vision
+  tls: true
+  reality-opts:
+    public-key: S6noV0L8eNASnTe1gXLutLZNdfENsvKMsOJiGQYi6nc
+    short-id: 0eec442e7b34d2f2
+  servername: www.tesla.com
+  client-fingerprint: random
 - name: 🇮🇪 爱尔兰 (Ireland) 05 - xiaohe
-  server: 63.32.92.226
+  server: 3.254.74.220
   port: 443
   udp: true
   type: ss
@@ -50,19 +56,6 @@ proxies:
   servername: ir.failspace.top
   skip-cert-verify: false
   client-fingerprint: firefox
-- name: 🇮🇪 爱尔兰 (Ireland) 07 - xiaohe
-  server: 3.9.135.156
-  port: 51847
-  udp: true
-  type: vless
-  uuid: 391a01e9-b664-407b-9158-610fab3f5920
-  flow: xtls-rprx-vision
-  tls: true
-  reality-opts:
-    public-key: S6noV0L8eNASnTe1gXLutLZNdfENsvKMsOJiGQYi6nc
-    short-id: 0eec442e7b34d2f2
-  servername: www.tesla.com
-  client-fingerprint: random
 proxy-groups:
 - name: PROXIES
   type: select
@@ -74,7 +67,6 @@ proxy-groups:
   - 🇮🇪 爱尔兰 (Ireland) 04 - xiaohe
   - 🇮🇪 爱尔兰 (Ireland) 05 - xiaohe
   - 🇮🇪 爱尔兰 (Ireland) 06 - xiaohe
-  - 🇮🇪 爱尔兰 (Ireland) 07 - xiaohe
 - name: AUTO
   type: url-test
   url: https://www.gstatic.com/generate_204
@@ -86,6 +78,5 @@ proxy-groups:
   - 🇮🇪 爱尔兰 (Ireland) 04 - xiaohe
   - 🇮🇪 爱尔兰 (Ireland) 05 - xiaohe
   - 🇮🇪 爱尔兰 (Ireland) 06 - xiaohe
-  - 🇮🇪 爱尔兰 (Ireland) 07 - xiaohe
 rules:
 - MATCH,PROXIES

@@ -5,12 +5,12 @@ mode: rule
 log-level: info
 proxies:
 - name: 🇵🇱 波兰 (Poland) 01 - xiaohe
-  server: 217.30.10.44
-  port: 9041
+  server: 64.176.73.160
+  port: 8388
   udp: true
   type: ss
-  cipher: aes-256-cfb
-  password: U6qnYRhfyDmn8sgn
+  cipher: chacha20-ietf-poly1305
+  password: VJtsgllDDJfNmaTe
 - name: 🇵🇱 波兰 (Poland) 02 - xiaohe
   server: 217.30.10.44
   port: 9062
@@ -19,13 +19,20 @@ proxies:
   cipher: aes-256-cfb
   password: tkhHVxxfM2QErBWe
 - name: 🇵🇱 波兰 (Poland) 03 - xiaohe
-  server: 64.176.73.160
-  port: 8388
+  server: 217.30.10.44
+  port: 9071
   udp: true
   type: ss
-  cipher: chacha20-ietf-poly1305
-  password: VJtsgllDDJfNmaTe
+  cipher: aes-256-cfb
+  password: mENfxTFQpRKKh4As
 - name: 🇵🇱 波兰 (Poland) 04 - xiaohe
+  server: 217.30.10.44
+  port: 9041
+  udp: true
+  type: ss
+  cipher: aes-256-cfb
+  password: U6qnYRhfyDmn8sgn
+- name: 🇵🇱 波兰 (Poland) 05 - xiaohe
   server: 185.223.57.10
   port: 33743
   udp: true
@@ -39,7 +46,7 @@ proxies:
   network: grpc
   grpc-opts:
     grpc-service-name: TunService
-- name: 🇵🇱 波兰 (Poland) 05 - xiaohe
+- name: 🇵🇱 波兰 (Poland) 06 - xiaohe
   server: 94.183.209.59
   port: 443
   udp: true
@@ -48,17 +55,6 @@ proxies:
   network: ws
   ws-opts:
     path: /
-- name: 🇵🇱 波兰 (Poland) 06 - xiaohe
-  server: 94.183.209.58
-  port: 443
-  udp: true
-  type: vless
-  uuid: 78791f9e-fe09-4d4f-88ec-895764bae0d6
-  network: ws
-  ws-opts:
-    path: /
-    headers:
-      Host: pl2.lckdwn.ru
 - name: 🇵🇱 波兰 (Poland) 07 - xiaohe
   server: 94.183.209.43
   port: 443
@@ -69,38 +65,31 @@ proxies:
   ws-opts:
     path: /
 - name: 🇵🇱 波兰 (Poland) 08 - xiaohe
-  server: 217.30.10.44
-  port: 9071
+  server: 194.61.121.93
+  port: 7538
   udp: true
   type: ss
-  cipher: aes-256-cfb
-  password: mENfxTFQpRKKh4As
+  cipher: chacha20-ietf-poly1305
+  password: U9YAoqBgg5VyGBc6vQv1sN
 - name: 🇵🇱 波兰 (Poland) 09 - xiaohe
-  server: 2.26.224.233
-  port: 8443
+  server: admin.wwwinternetvideo.click
+  port: 443
   udp: true
-  type: vless
-  uuid: 758f49d3-5f5f-47e7-bfa4-4ce96faf800d
-  tls: true
-  reality-opts:
-    public-key: NI5Rkfn6zO_gF-UC1nuvJwu4SDakCXh3ygJOKU1EITU
-    short-id: f747a7a5793b5714
-  servername: cdn.shopify.com
-  client-fingerprint: firefox
-  network: grpc
-  grpc-opts:
-    grpc-service-name: ''
+  type: hysteria2
+  password: YutbgyXL1mGaSlBXDoEucWvYbrDCINgUcQ6R6_At5Pjr2xCc
+  sni: admin.wwwinternetvideo.click
+  skip-cert-verify: false
 - name: 🇵🇱 波兰 (Poland) 10 - xiaohe
-  server: 144.31.2.33
+  server: 94.183.209.58
   port: 443
   udp: true
   type: vless
-  uuid: cd3bb7d9-7df3-4644-ac05-c260990ac277
-  flow: xtls-rprx-vision
-  tls: true
-  servername: pl3.moritech.net
-  skip-cert-verify: false
-  client-fingerprint: firefox
+  uuid: 78791f9e-fe09-4d4f-88ec-895764bae0d6
+  network: ws
+  ws-opts:
+    path: /
+    headers:
+      Host: pl2.lckdwn.ru
 - name: 🇵🇱 波兰 (Poland) 11 - xiaohe
   server: pl-new-ded2.moritech.net
   port: 443
@@ -119,16 +108,30 @@ proxies:
   type: hysteria2
   password: 865e271f7c97b549b024255c9d02cebe9cc0c2c070a82b1e11bb11b9cd88dd01
   sni: streambox.wwwinternetvideo.click
-  skip-cert-verify: false
+  skip-cert-verify: true
 - name: 🇵🇱 波兰 (Poland) 13 - xiaohe
-  server: go1.wwwinternetvideo.click
+  server: 144.31.5.64
   port: 443
   udp: true
-  type: hysteria2
-  password: YutbgyXL1mGaSlBXDoEucWvYbrDCINgUcQ6R6_At5Pjr2xCc
-  sni: admin.wwwinternetvideo.click
-  skip-cert-verify: true
+  type: vless
+  uuid: cd3bb7d9-7df3-4644-ac05-c260990ac277
+  flow: xtls-rprx-vision
+  tls: true
+  servername: pl6.moritech.net
+  skip-cert-verify: false
+  client-fingerprint: firefox
 - name: 🇵🇱 波兰 (Poland) 14 - xiaohe
+  server: 50.7.248.234
+  port: 443
+  udp: true
+  type: vless
+  uuid: cd3bb7d9-7df3-4644-ac05-c260990ac277
+  flow: xtls-rprx-vision
+  tls: true
+  servername: viper-22.moriarty-web.com
+  skip-cert-verify: false
+  client-fingerprint: firefox
+- name: 🇵🇱 波兰 (Poland) 15 - xiaohe
   server: 144.31.5.3
   port: 443
   udp: true
@@ -139,6 +142,17 @@ proxies:
   servername: pl4.moritech.net
   skip-cert-verify: false
   client-fingerprint: chrome
+- name: 🇵🇱 波兰 (Poland) 16 - xiaohe
+  server: 144.31.2.33
+  port: 443
+  udp: true
+  type: vless
+  uuid: cd3bb7d9-7df3-4644-ac05-c260990ac277
+  flow: xtls-rprx-vision
+  tls: true
+  servername: pl3.moritech.net
+  skip-cert-verify: false
+  client-fingerprint: firefox
 proxy-groups:
 - name: PROXIES
   type: select
@@ -158,6 +172,8 @@ proxy-groups:
   - 🇵🇱 波兰 (Poland) 12 - xiaohe
   - 🇵🇱 波兰 (Poland) 13 - xiaohe
   - 🇵🇱 波兰 (Poland) 14 - xiaohe
+  - 🇵🇱 波兰 (Poland) 15 - xiaohe
+  - 🇵🇱 波兰 (Poland) 16 - xiaohe
 - name: AUTO
   type: url-test
   url: https://www.gstatic.com/generate_204
@@ -177,5 +193,7 @@ proxy-groups:
   - 🇵🇱 波兰 (Poland) 12 - xiaohe
   - 🇵🇱 波兰 (Poland) 13 - xiaohe
   - 🇵🇱 波兰 (Poland) 14 - xiaohe
+  - 🇵🇱 波兰 (Poland) 15 - xiaohe
+  - 🇵🇱 波兰 (Poland) 16 - xiaohe
 rules:
 - MATCH,PROXIES
