@@ -5,13 +5,20 @@ mode: rule
 log-level: info
 proxies:
 - name: 🇰🇿 哈萨克斯坦 (Kazakhstan) 01 - xiaohe
-  server: 46.247.41.120
-  port: 443
+  server: 111.88.143.139
+  port: 51940
   udp: true
-  type: hysteria2
-  password: 8fb328f0-d8e0-4b11-a6db-3dadfc4f02a3
-  sni: 46.247.41.120
-  skip-cert-verify: true
+  type: vless
+  uuid: 03464802-b517-404b-b15c-7750ffc5e78f
+  tls: true
+  reality-opts:
+    public-key: uPHvFb_vZ3DKL-8Et_e9OliZskdSV5U1NZ66tHfC-2Y
+    short-id: fd7f
+  servername: yahoo.com
+  client-fingerprint: chrome
+  network: grpc
+  grpc-opts:
+    grpc-service-name: ''
 proxy-groups:
 - name: PROXIES
   type: select
