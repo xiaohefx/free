@@ -4,15 +4,15 @@
   },
   "outbounds": [
     {
-      "type": "trojan",
-      "tag": "🇾🇪 YE 01 - xiaohe",
-      "server": "z-jp2.1card.cc",
-      "server_port": 10010,
-      "password": "ultra@kWZdAzt_IH593eGLRjdxnBZ0",
-      "tls": {
-        "enabled": true,
-        "server_name": "z-jp2.1card.cc",
-        "insecure": true
+      "type": "vmess",
+      "tag": "🇹🇭 泰国 (Thailand) 01 - xiaohe",
+      "server": "118.193.57.167",
+      "server_port": 49667,
+      "uuid": "d46bf492-45f4-4c33-82d1-ea2a1cb54eb6",
+      "security": "auto",
+      "transport": {
+        "type": "ws",
+        "path": "/d46bf492"
       }
     },
     {
@@ -20,14 +20,14 @@
       "tag": "select",
       "outbounds": [
         "auto",
-        "🇾🇪 YE 01 - xiaohe"
+        "🇹🇭 泰国 (Thailand) 01 - xiaohe"
       ]
     },
     {
       "type": "urltest",
       "tag": "auto",
       "outbounds": [
-        "🇾🇪 YE 01 - xiaohe"
+        "🇹🇭 泰国 (Thailand) 01 - xiaohe"
       ],
       "url": "https://www.gstatic.com/generate_204"
     },

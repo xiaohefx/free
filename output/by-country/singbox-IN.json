@@ -6,6 +6,37 @@
     {
       "type": "vless",
       "tag": "🇮🇳 印度 (India) 01 - xiaohe",
+      "server": "104.21.69.118",
+      "server_port": 443,
+      "uuid": "1443b7a1-7ba9-4ec9-b904-2e867367b5d7",
+      "tls": {
+        "enabled": true,
+        "server_name": "odd-violet-5440.asdgrweeee13.workers.dev",
+        "insecure": false,
+        "utls": {
+          "enabled": true,
+          "fingerprint": "chrome"
+        }
+      },
+      "transport": {
+        "type": "ws",
+        "path": "/sync",
+        "headers": {
+          "Host": "odd-violet-5440.asdgrweeee13.workers.dev"
+        }
+      }
+    },
+    {
+      "type": "shadowsocks",
+      "tag": "🇮🇳 印度 (India) 02 - xiaohe",
+      "server": "172.105.39.124",
+      "server_port": 7002,
+      "method": "aes-256-gcm",
+      "password": "RexnBgU7EV5ADxG"
+    },
+    {
+      "type": "vless",
+      "tag": "🇮🇳 印度 (India) 03 - xiaohe",
       "server": "194.61.31.126",
       "server_port": 2053,
       "uuid": "50ddfd92-dc79-4777-a256-41e34d56836e",
@@ -14,7 +45,7 @@
         "server_name": "www.apple.com",
         "utls": {
           "enabled": true,
-          "fingerprint": "firefox"
+          "fingerprint": "chrome"
         },
         "reality": {
           "enabled": true,
@@ -25,30 +56,14 @@
     },
     {
       "type": "hysteria2",
-      "tag": "🇮🇳 印度 (India) 02 - xiaohe",
+      "tag": "🇮🇳 印度 (India) 04 - xiaohe",
       "server": "vpn-in-001.fastervpn.world",
       "server_port": 443,
       "password": "H7mP2xY9kJ4nQ8wR5tF6vB3z",
       "tls": {
         "enabled": true,
-        "server_name": "vpn-in-001.fastervpn.world",
+        "server_name": "127.0.0.1",
         "insecure": true
-      }
-    },
-    {
-      "type": "vless",
-      "tag": "🇮🇳 印度 (India) 03 - xiaohe",
-      "server": "india.shadowlos.top",
-      "server_port": 443,
-      "uuid": "170fb6f8-a34d-4f50-9275-e48ab47c58fd",
-      "tls": {
-        "enabled": true,
-        "server_name": "india.shadowlos.top",
-        "insecure": false
-      },
-      "transport": {
-        "type": "grpc",
-        "service_name": "YPN65c1yiYLmpXbRn0lG"
       }
     },
     {
@@ -58,7 +73,8 @@
         "auto",
         "🇮🇳 印度 (India) 01 - xiaohe",
         "🇮🇳 印度 (India) 02 - xiaohe",
-        "🇮🇳 印度 (India) 03 - xiaohe"
+        "🇮🇳 印度 (India) 03 - xiaohe",
+        "🇮🇳 印度 (India) 04 - xiaohe"
       ]
     },
     {
@@ -67,7 +83,8 @@
       "outbounds": [
         "🇮🇳 印度 (India) 01 - xiaohe",
         "🇮🇳 印度 (India) 02 - xiaohe",
-        "🇮🇳 印度 (India) 03 - xiaohe"
+        "🇮🇳 印度 (India) 03 - xiaohe",
+        "🇮🇳 印度 (India) 04 - xiaohe"
       ],
       "url": "https://www.gstatic.com/generate_204"
     },

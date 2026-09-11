@@ -6,34 +6,72 @@
     {
       "type": "vless",
       "tag": "🇱🇻 拉脱维亚 (Latvia) 01 - xiaohe",
-      "server": "laoye.in-gect.fun",
-      "server_port": 2083,
-      "uuid": "70e20b2e-3b1f-4c25-9a3d-9240570391bb",
+      "server": "172.67.67.178",
+      "server_port": 443,
+      "uuid": "aebe5a70-0ca3-46ce-8208-8b5bab1346ce",
       "tls": {
         "enabled": true,
-        "server_name": "laoye.in-gect.fun",
+        "server_name": "rAyAn-007.nAsTaRaN.DpDnS.OrG",
         "insecure": false,
         "utls": {
           "enabled": true,
-          "fingerprint": "ios"
+          "fingerprint": "chrome"
         }
       },
       "transport": {
-        "type": "grpc",
-        "service_name": "grpc"
+        "type": "ws",
+        "headers": {
+          "Host": "rAyAn-007.nAsTaRaN.DpDnS.OrG"
+        }
+      }
+    },
+    {
+      "type": "shadowsocks",
+      "tag": "🇱🇻 拉脱维亚 (Latvia) 02 - xiaohe",
+      "server": "185.135.86.175",
+      "server_port": 9036,
+      "method": "aes-256-cfb",
+      "password": "hbtvgUz5uNYyB3Rf"
+    },
+    {
+      "type": "vless",
+      "tag": "🇱🇻 拉脱维亚 (Latvia) 03 - xiaohe",
+      "server": "138.124.180.137",
+      "server_port": 443,
+      "uuid": "5234b2b7-5e07-422c-8159-d62a676c00c6",
+      "flow": "xtls-rprx-vision",
+      "tls": {
+        "enabled": true,
+        "server_name": "www.apple.com",
+        "utls": {
+          "enabled": true,
+          "fingerprint": "chrome"
+        },
+        "reality": {
+          "enabled": true,
+          "public_key": "GBdkyDLfr0LIZo_94Xv8ycAKOmkjArYzwJAEMhuXX2c",
+          "short_id": "33acba1b"
+        }
       }
     },
     {
       "type": "vless",
-      "tag": "🇱🇻 拉脱维亚 (Latvia) 02 - xiaohe",
-      "server": "89.36.161.222",
-      "server_port": 2096,
-      "uuid": "70e20b2e-3b1f-4c25-9a3d-9240570391bb",
-      "transport": {
-        "type": "ws",
-        "path": "/",
-        "headers": {
-          "Host": "laoye.in-gect.fun"
+      "tag": "🇱🇻 拉脱维亚 (Latvia) 04 - xiaohe",
+      "server": "nl.cloudtechone.org",
+      "server_port": 443,
+      "uuid": "2b2ea9d8-501e-4b79-8fd9-19bff6ed5cf5",
+      "flow": "xtls-rprx-vision",
+      "tls": {
+        "enabled": true,
+        "server_name": "nl.cloudtechone.org",
+        "utls": {
+          "enabled": true,
+          "fingerprint": "firefox"
+        },
+        "reality": {
+          "enabled": true,
+          "public_key": "_IBXb9NfhsnS21XbU9PIl73ExvrjXGXVLO0Za1ui5Fo",
+          "short_id": "f93c9d5127e622e4"
         }
       }
     },
@@ -43,7 +81,9 @@
       "outbounds": [
         "auto",
         "🇱🇻 拉脱维亚 (Latvia) 01 - xiaohe",
-        "🇱🇻 拉脱维亚 (Latvia) 02 - xiaohe"
+        "🇱🇻 拉脱维亚 (Latvia) 02 - xiaohe",
+        "🇱🇻 拉脱维亚 (Latvia) 03 - xiaohe",
+        "🇱🇻 拉脱维亚 (Latvia) 04 - xiaohe"
       ]
     },
     {
@@ -51,7 +91,9 @@
       "tag": "auto",
       "outbounds": [
         "🇱🇻 拉脱维亚 (Latvia) 01 - xiaohe",
-        "🇱🇻 拉脱维亚 (Latvia) 02 - xiaohe"
+        "🇱🇻 拉脱维亚 (Latvia) 02 - xiaohe",
+        "🇱🇻 拉脱维亚 (Latvia) 03 - xiaohe",
+        "🇱🇻 拉脱维亚 (Latvia) 04 - xiaohe"
       ],
       "url": "https://www.gstatic.com/generate_204"
     },
