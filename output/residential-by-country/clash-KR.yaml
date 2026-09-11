@@ -5,8 +5,8 @@ mode: rule
 log-level: info
 proxies:
 - name: 🇰🇷 韩国 (South Korea) 01 (家宽) - xiaohe
-  server: 221.139.79.57
-  port: 13979
+  server: 211.178.105.134
+  port: 6123
   udp: true
   type: ss
   cipher: aes-256-cfb

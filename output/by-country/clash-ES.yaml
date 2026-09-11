@@ -19,32 +19,6 @@ proxies:
   cipher: chacha20-ietf-poly1305
   password: qItG8SueYQcP
 - name: 🇪🇸 西班牙 (Spain) 03 - xiaohe
-  server: 185.254.205.79
-  port: 19842
-  udp: true
-  type: vless
-  uuid: 43c23116-1115-4af4-a0f0-56f02841a605
-  flow: xtls-rprx-vision
-  tls: true
-  reality-opts:
-    public-key: sfOfuQeJBlKfDnPL_EMWUxMIiFAN8BNKjtWDUvlsjzM
-    short-id: 25ebc9e0a912
-  servername: www.tesla.com
-  client-fingerprint: chrome
-- name: 🇪🇸 西班牙 (Spain) 04 - xiaohe
-  server: 93.189.94.67
-  port: 48296
-  udp: true
-  type: vless
-  uuid: 898537d9-ce3a-4937-bbef-c0fa61c07791
-  flow: xtls-rprx-vision
-  tls: true
-  reality-opts:
-    public-key: ga1wUMMknP4pwJfUNOOvD9I35XV4q3c73byXPYbRxBE
-    short-id: 109657bb2dbe99
-  servername: www.sony.com
-  client-fingerprint: chrome
-- name: 🇪🇸 西班牙 (Spain) 05 - xiaohe
   server: 212.227.235.66
   port: 2053
   udp: true
@@ -64,8 +38,6 @@ proxy-groups:
   - 🇪🇸 西班牙 (Spain) 01 - xiaohe
   - 🇪🇸 西班牙 (Spain) 02 - xiaohe
   - 🇪🇸 西班牙 (Spain) 03 - xiaohe
-  - 🇪🇸 西班牙 (Spain) 04 - xiaohe
-  - 🇪🇸 西班牙 (Spain) 05 - xiaohe
 - name: AUTO
   type: url-test
   url: https://www.gstatic.com/generate_204
@@ -74,7 +46,5 @@ proxy-groups:
   - 🇪🇸 西班牙 (Spain) 01 - xiaohe
   - 🇪🇸 西班牙 (Spain) 02 - xiaohe
   - 🇪🇸 西班牙 (Spain) 03 - xiaohe
-  - 🇪🇸 西班牙 (Spain) 04 - xiaohe
-  - 🇪🇸 西班牙 (Spain) 05 - xiaohe
 rules:
 - MATCH,PROXIES

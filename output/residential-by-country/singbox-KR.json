@@ -6,8 +6,8 @@
     {
       "type": "shadowsocks",
       "tag": "🇰🇷 韩国 (South Korea) 01 (家宽) - xiaohe",
-      "server": "221.139.79.57",
-      "server_port": 13979,
+      "server": "211.178.105.134",
+      "server_port": 6123,
       "method": "aes-256-cfb",
       "password": "qwerREWQ@@"
     },

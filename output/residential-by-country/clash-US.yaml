@@ -18,7 +18,7 @@ proxies:
   servername: addons.mozilla.org
   client-fingerprint: random
 - name: 🇺🇸 美国 (United States) 02 (家宽) - xiaohe
-  server: 178.95.170.98
+  server: 178.95.170.83
   port: 2087
   udp: true
   type: vless
