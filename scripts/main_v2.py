@@ -588,7 +588,7 @@ def _parse_transport(params: dict) -> dict:
         if params.get("serviceName"):
             t["service_name"] = urllib.parse.unquote(params["serviceName"])
         return t
-    if network == "h2":
+    if network in ("h2", "http"):   # v2ray 生态两种写法都有: type=h2 / type=http (导出用 http, 兼容两者)
         t = {"type": "http"}
         host = params.get("host", "")
         if host:
@@ -761,13 +761,19 @@ def _ss_outbound(host, port, method, password):
 
 
 def parse_hysteria2(uri: str):
-    """hy2:// / hysteria2:// auth@host:port?sni=..&obfs=salamander&obfs-password=..&insecure=1"""
+    """hy2:// / hysteria2:// auth@host:port?sni=..&obfs=salamander&obfs-password=..&insecure=1
+    注: auth 可能含 : / 等特殊字符 (如 https:// 前缀的密码) — 以最后一个 @ 为锚点分割"""
     prefix = "hysteria2://" if uri.startswith("hysteria2://") else "hy2://"
     body = uri[len(prefix):].split("#", 1)[0]
-    m = re.match(r"^([^@#/?]+)@(\[[^\]]+\]|[^:@/?]+):(\d+)(?:[/?]([^#]*))?$", body)
+    # 以最后一个 @ 分割 (密码内可能含 @); host 部分不含 @
+    at = body.rfind("@")
+    if at <= 0:
+        return None
+    auth, rest = body[:at], body[at+1:]
+    m = re.match(r"^(\[[^\]]+\]|[^:/?#]+):(\d+)(?:[/?]([^#]*))?$", rest)
     if not m:
         return None
-    auth, host, port, query = m.groups()
+    host, port, query = m.groups()
     params = _query_dict(query or "")
     outbound = {
         "type": "hysteria2",
@@ -1610,30 +1616,74 @@ def outbound_to_clash(node: dict, name: str) -> dict:
 def outbound_to_v2ray_link(node: dict, name: str) -> str:
     """sing-box outbound → v2rayN 兼容 URI"""
     t = node.get("type")
-    server, port = node["server"], node["server_port"]
+    # 端口跳跃节点 (hy2 mport): 无 server_port 时取 server_ports 首区间起始端口
+    if "server_port" in node:
+        port = node["server_port"]
+    elif node.get("server_ports"):
+        port = int(str(node["server_ports"][0]).split(":")[0])
+    else:
+        return ""
+    server = node["server"]
     tls = node.get("tls") or {}
     transport = node.get("transport") or {}
 
     if t == "vmess":
+        ttype = transport.get("type", "tcp")
         data = {
             "v": "2", "ps": name, "add": server, "port": str(port),
             "id": node["uuid"], "aid": str(node.get("alter_id", 0)),
-            "scy": "auto", "net": transport.get("type", "tcp"),
-            "type": "none", "host": (transport.get("headers") or {}).get("Host", ""),
-            "path": transport.get("path", ""), "tls": "tls" if tls.get("enabled") else "",
+            "scy": "auto", "net": ttype,
+            "type": "none",
+            "host": "", "path": "",
+            "tls": "tls" if tls.get("enabled") else "",
             "sni": tls.get("server_name", ""),
         }
+        if ttype == "ws":
+            if transport.get("path"):
+                data["path"] = transport["path"]
+            if (transport.get("headers") or {}).get("Host"):
+                data["host"] = transport["headers"]["Host"]
+            if transport.get("max_early_data"):
+                data["path"] = (data["path"] or "") + f"?ed={transport['max_early_data']}"
+        elif ttype == "grpc":
+            if transport.get("service_name"):
+                data["path"] = transport["service_name"]
+        elif ttype == "http":
+            if transport.get("path"):
+                data["path"] = transport["path"]
+            if transport.get("host"):
+                data["host"] = ",".join(transport["host"])
+        elif ttype == "httpupgrade":
+            if transport.get("path"):
+                data["path"] = transport["path"]
+            if transport.get("host"):
+                data["host"] = transport["host"]
         return "vmess://" + base64.b64encode(json.dumps(data, ensure_ascii=False).encode()).decode()
     if t == "vless":
         q = {}
-        if transport.get("type"):
-            q["type"] = transport["type"]
-            if transport.get("path"):
-                q["path"] = transport["path"]
-            if (transport.get("headers") or {}).get("Host"):
-                q["host"] = transport["headers"]["Host"]
-            if transport.get("service_name"):
-                q["serviceName"] = transport["service_name"]
+        ttype = transport.get("type")
+        if ttype:
+            q["type"] = ttype
+            if ttype == "ws":
+                if transport.get("path"):
+                    q["path"] = transport["path"]
+                if (transport.get("headers") or {}).get("Host"):
+                    q["host"] = transport["headers"]["Host"]
+                if transport.get("max_early_data"):
+                    q["ed"] = str(transport["max_early_data"])
+            elif ttype == "grpc":
+                if transport.get("service_name"):
+                    q["serviceName"] = transport["service_name"]
+            elif ttype == "http":
+                if transport.get("host"):
+                    q["host"] = ",".join(transport["host"])
+                if transport.get("path"):
+                    q["path"] = transport["path"]
+            elif ttype == "httpupgrade":
+                if transport.get("path"):
+                    q["path"] = transport["path"]
+                if transport.get("host"):
+                    q["host"] = transport["host"]
         if tls.get("reality"):
             q["security"] = "reality"
             q["pbk"] = tls["reality"]["public_key"]
@@ -1645,6 +1695,10 @@ def outbound_to_v2ray_link(node: dict, name: str) -> str:
             q["security"] = "tls"
             if tls.get("server_name"):
                 q["sni"] = tls["server_name"]
+            if tls.get("alpn"):
+                q["alpn"] = ",".join(tls["alpn"])
+            if tls.get("utls"):
+                q["fp"] = tls["utls"].get("fingerprint", "chrome")
             if tls.get("insecure"):
                 q["allowInsecure"] = "1"
         if node.get("flow"):
@@ -1652,13 +1706,33 @@ def outbound_to_v2ray_link(node: dict, name: str) -> str:
         query = urllib.parse.urlencode(q)
         return f"vless://{node['uuid']}@{server}:{port}?{query}#{urllib.parse.quote(name)}"
     if t == "trojan":
-        q = {}
+        q = {"security": "tls"}
         if tls.get("server_name"):
             q["sni"] = tls["server_name"]
-        if transport.get("type"):
-            q["type"] = transport["type"]
-            if transport.get("service_name"):
-                q["serviceName"] = transport["service_name"]
+        if tls.get("alpn"):
+            q["alpn"] = ",".join(tls["alpn"])
+        if (tls.get("utls") or {}).get("fingerprint"):
+            q["fp"] = tls["utls"]["fingerprint"]
+        if tls.get("insecure"):
+            q["allowInsecure"] = "1"
+        ttype = transport.get("type")
+        if ttype:
+            q["type"] = ttype
+            if ttype == "ws":
+                if transport.get("path"):
+                    q["path"] = transport["path"]
+                if (transport.get("headers") or {}).get("Host"):
+                    q["host"] = transport["headers"]["Host"]
+                if transport.get("max_early_data"):
+                    q["ed"] = str(transport["max_early_data"])
+            elif ttype == "grpc":
+                if transport.get("service_name"):
+                    q["serviceName"] = transport["service_name"]
+            elif ttype == "httpupgrade":
+                if transport.get("path"):
+                    q["path"] = transport["path"]
+                if transport.get("host"):
+                    q["host"] = transport["host"]
         query = urllib.parse.urlencode(q)
         return f"trojan://{urllib.parse.quote(node['password'])}@{server}:{port}?{query}#{urllib.parse.quote(name)}"
     if t == "shadowsocks":
@@ -1772,6 +1846,16 @@ def classify_and_export(test_results: list):
             country = country or off_c
             asn = asn or off_asn
             org = org or off_org
+
+        # ★ 出口 IP 查不到国家 (云内网/中转隧道) → 回退用入口服务器 IP 定位国家
+        #    (中转节点出口常是内网地址, mmdb 也查不到; 入口国 ≠ 出口国但至少给用户可用地区)
+        if (not country or country in ("OTHER", "ZZ")) and r.get("server"):
+            srv_ip = r["server"] if is_ip_literal(r["server"]) else resolve_host(r["server"])
+            if srv_ip and country_reader:
+                off_c, srv_asn, srv_org = offline_ip_lookup(srv_ip, country_reader, asn_reader)
+                if off_c and off_c not in ("OTHER", "ZZ"):
+                    country = off_c
+                    asn, org = asn or srv_asn, org or srv_org
 
         rec = ip_api_info.get(exit_ip, {})
         net_type, confidence = classify_network_type(
@@ -2011,6 +2095,11 @@ def export_singbox_json(sb_nodes, filepath):
 def update_readme(total_count, res_count):
     repo_name = os.environ.get("GITHUB_REPOSITORY", "heleihub/Free-node-subscription").strip()
     cache_bust = int(time.time())
+    # 私有化部署 Worker 脚本里的仓库参数 (默认值兜底)
+    try:
+        owner, repo = repo_name.split("/", 1)
+    except ValueError:
+        owner, repo = "heleihub", "Free-node-subscription"
 
     def count_file(path):
         if not os.path.exists(path):
@@ -2082,6 +2171,62 @@ def update_readme(total_count, res_count):
 | 地区/国家 | 节点数 | V2RayN 专属订阅 | Clash 专属订阅 | sing-box 专属订阅 |
 | :--- | :---: | :---: | :---: | :---: |
 {normal_table}
+
+---
+
+## 🔒 私有仓库（Private）无感免翻订阅方案 (基于 Cloudflare Workers)
+
+> 如果你希望将本 GitHub 仓库设置为 **Private (私有仓库)** 保护节点资产，外部客户端无法直接拉取原生 Raw 或公共 CDN 链接，可以通过以下 Cloudflare Worker 搭建轻量级私密网关反代：
+
+### 1. 获取 GitHub 永久个人令牌 (PAT)
+1. 进入 GitHub -> **Settings** -> **Developer Settings** -> **Personal access tokens (classic)**。
+2. 点击 **Generate new token (classic)**，勾选 `repo` 权限，有效期设为 `No expiration`（永不过期）。
+3. 复制保存生成的以 `ghp_` 开头的 Token。
+
+### 2. 部署 Cloudflare Worker
+登录 Cloudflare Dashboard，创建一个新的 Worker，复制以下脚本粘贴并部署（把 `OWNER`/`REPO`/`GITHUB_TOKEN` 改成你自己的）：
+
+```javascript
+export default {{
+  async fetch(request) {{
+    const GITHUB_TOKEN = "ghp_你的GitHub永久访问令牌";
+    const OWNER = "{owner}";
+    const REPO = "{repo}";
+    const BRANCH = "main";
+
+    const url = new URL(request.url);
+    const filePath = "output" + url.pathname;
+    const ghUrl = "https://raw.githubusercontent.com/" + OWNER + "/" + REPO + "/" + BRANCH + "/" + filePath;
+
+    const res = await fetch(ghUrl, {{
+      headers: {{
+        "Authorization": "token " + GITHUB_TOKEN,
+        "User-Agent": "Cloudflare-Worker"
+      }}
+    }});
+
+    if (!res.ok) {{
+      return new Response("Not Found", {{ status: 404 }});
+    }}
+
+    return new Response(await res.text(), {{
+      headers: {{
+        "Content-Type": "text/plain; charset=utf-8",
+        "Cache-Control": "no-cache"
+      }}
+    }});
+  }}
+}}
+```
+
+### 3. 私有订阅链接映射方式
+部署后 Worker 会分配一个专属域名（例如 `my-sub.yourname.workers.dev`），你的客户端可以直接无感订阅：
+* **总 V2RayN 订阅**: `https://你的域名.workers.dev/v2ray.txt`
+* **总 Clash 订阅**: `https://你的域名.workers.dev/clash.yaml`
+* **总 sing-box 订阅**: `https://你的域名.workers.dev/singbox.json`
+* **台湾家宽 V2RayN**: `https://你的域名.workers.dev/residential-by-country/TW.txt`
+* **香港家宽 Clash**: `https://你的域名.workers.dev/residential-by-country/clash-HK.yaml`
+* **日本家宽 sing-box**: `https://你的域名.workers.dev/residential-by-country/singbox-JP.json`
 
 ---
 
