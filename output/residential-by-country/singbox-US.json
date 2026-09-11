@@ -27,7 +27,7 @@
     {
       "type": "vless",
       "tag": "🇺🇸 美国 (United States) 02 (家宽) - xiaohe",
-      "server": "178.95.170.83",
+      "server": "178.95.170.115",
       "server_port": 2087,
       "uuid": "bf443e4a-aa9e-4509-abf0-d0f6828d57be",
       "transport": {

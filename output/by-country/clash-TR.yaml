@@ -5,25 +5,18 @@ mode: rule
 log-level: info
 proxies:
 - name: 🇹🇷 土耳其 (Turkey) 01 - xiaohe
-  server: 188.114.97.6
-  port: 8080
+  server: 151.241.226.201
+  port: 2053
   udp: true
   type: vless
-  uuid: a22bff60-a40a-4250-bde2-4c660e363b47
-  network: ws
-  ws-opts:
-    path: /axch1mttbxz2k55y01
-    headers:
-      Host: index.harmonica01.workers.dev
+  uuid: e691b034-dfc9-4f22-80aa-6d4f6404a4df
+  tls: true
+  reality-opts:
+    public-key: k5COjpopVNGzEuMb457zCrrZegSdBX-d8bg0G6HDsE4
+    short-id: 9bd613c48251f0db
+  servername: www.apple.com
+  client-fingerprint: firefox
 - name: 🇹🇷 土耳其 (Turkey) 02 - xiaohe
-  server: ninja.monak2.ir
-  port: 110
-  udp: true
-  type: vmess
-  uuid: 7034f274-c53a-4d73-9f0c-b28bac0d9e7a
-  alterId: 0
-  cipher: auto
-- name: 🇹🇷 土耳其 (Turkey) 03 - xiaohe
   server: 195.162.69.203
   port: 8443
   udp: true
@@ -33,12 +26,6 @@ proxies:
   servername: 195-162-69-203.sslip.io
   skip-cert-verify: false
   client-fingerprint: firefox
-- name: 🇹🇷 土耳其 (Turkey) 04 - xiaohe
-  server: app.life-pro.ir
-  port: 8082
-  udp: true
-  type: vless
-  uuid: 79f98593-6a21-4783-a425-3d5609a79df1
 proxy-groups:
 - name: PROXIES
   type: select
@@ -46,8 +33,6 @@ proxy-groups:
   - AUTO
   - 🇹🇷 土耳其 (Turkey) 01 - xiaohe
   - 🇹🇷 土耳其 (Turkey) 02 - xiaohe
-  - 🇹🇷 土耳其 (Turkey) 03 - xiaohe
-  - 🇹🇷 土耳其 (Turkey) 04 - xiaohe
 - name: AUTO
   type: url-test
   url: https://www.gstatic.com/generate_204
@@ -55,7 +40,5 @@ proxy-groups:
   proxies:
   - 🇹🇷 土耳其 (Turkey) 01 - xiaohe
   - 🇹🇷 土耳其 (Turkey) 02 - xiaohe
-  - 🇹🇷 土耳其 (Turkey) 03 - xiaohe
-  - 🇹🇷 土耳其 (Turkey) 04 - xiaohe
 rules:
 - MATCH,PROXIES
