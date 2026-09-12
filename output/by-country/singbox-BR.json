@@ -12,43 +12,18 @@
       "password": "owVdNnQcdPgthSyX"
     },
     {
-      "type": "vless",
-      "tag": "🇧🇷 巴西 (Brazil) 02 - xiaohe",
-      "server": "104.21.98.146",
-      "server_port": 8443,
-      "uuid": "50414e45-4c5f-5a45-5553-48493148ec15",
-      "tls": {
-        "enabled": true,
-        "server_name": "cgzdynepurqs.mercury061.workers.dev",
-        "insecure": false,
-        "utls": {
-          "enabled": true,
-          "fingerprint": "chrome"
-        }
-      },
-      "transport": {
-        "type": "ws",
-        "path": "/stream/PANEL_ZEUS/48493148ec15",
-        "headers": {
-          "Host": "cgzdynepurqs.mercury061.workers.dev"
-        }
-      }
-    },
-    {
       "type": "selector",
       "tag": "select",
       "outbounds": [
         "auto",
-        "🇧🇷 巴西 (Brazil) 01 - xiaohe",
-        "🇧🇷 巴西 (Brazil) 02 - xiaohe"
+        "🇧🇷 巴西 (Brazil) 01 - xiaohe"
       ]
     },
     {
       "type": "urltest",
       "tag": "auto",
       "outbounds": [
-        "🇧🇷 巴西 (Brazil) 01 - xiaohe",
-        "🇧🇷 巴西 (Brazil) 02 - xiaohe"
+        "🇧🇷 巴西 (Brazil) 01 - xiaohe"
       ],
       "url": "https://www.gstatic.com/generate_204"
     },
