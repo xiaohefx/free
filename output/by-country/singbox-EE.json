@@ -13,7 +13,7 @@
         "type": "ws",
         "path": "/",
         "headers": {
-          "Host": "94.183.170.135"
+          "Host": "estproxy4.lockdwn.com"
         }
       }
     },
