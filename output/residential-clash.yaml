@@ -5,7 +5,7 @@ mode: rule
 log-level: info
 proxies:
 - name: 🇺🇸 美国 (United States) 01 (家宽) - xiaohe
-  server: 162.159.39.218
+  server: 162.159.24.131
   port: 2052
   udp: true
   type: vless
@@ -16,24 +16,35 @@ proxies:
     headers:
       Host: 8nj2r.2k8t.f88.hh.vavava.kdns.fr
 - name: 🇺🇸 美国 (United States) 02 (家宽) - xiaohe
-  server: 172.64.154.8
-  port: 8080
+  server: 178.95.170.83
+  port: 2087
   udp: true
   type: vless
-  uuid: 47fcef29-ab4e-4aa6-932b-d95a18f28a4e
+  uuid: bf443e4a-aa9e-4509-abf0-d0f6828d57be
   network: ws
   ws-opts:
-    path: /?ed=2560security=tls
-    headers:
-      Host: 8nj2r.2k8t.f88.hh.vavava.kdns.fr
+    path: /4bc027a44532
 - name: 🇹🇼 中国台湾 (Taiwan) 03 (家宽) - xiaohe
-  server: 36.224.152.189
+  server: r3mrcg001287h3p.cybervena.com
   port: 50099
   udp: true
   type: ss
   cipher: chacha20-ietf-poly1305
   password: 7e731ec3-f8e1-43f6-92cf-3978d14705c4
-- name: 🇭🇰 中国香港 (Hong Kong) 04 (家宽) - xiaohe
+- name: 🇹🇼 中国台湾 (Taiwan) 04 (家宽) - xiaohe
+  server: 1.165.7.205
+  port: 39817
+  udp: true
+  type: vless
+  uuid: 6dbb8854-17a5-4684-b930-c11f022975ec
+  flow: xtls-rprx-vision
+  tls: true
+  reality-opts:
+    public-key: uzaav8KrDeu1P9qdg6fDfxmq9Z6vV6a-WVPTWX1zIj4
+    short-id: 0044d4f490e795b8
+  servername: www.apple.com
+  client-fingerprint: firefox
+- name: 🇭🇰 中国香港 (Hong Kong) 05 (家宽) - xiaohe
   server: 119.246.1.143
   port: 443
   udp: true
@@ -41,7 +52,7 @@ proxies:
   password: BxceQaOe
   sni: 119.246.1.143
   skip-cert-verify: true
-- name: 🇭🇰 中国香港 (Hong Kong) 05 (家宽) - xiaohe
+- name: 🇭🇰 中国香港 (Hong Kong) 06 (家宽) - xiaohe
   server: dlbgwqqngrjbwan.jiedddym.com
   port: 42868
   udp: true
@@ -54,36 +65,6 @@ proxies:
     short-id: 747a75eb5ecef8
   servername: www.apple.com
   client-fingerprint: chrome
-- name: 🇹🇼 中国台湾 (Taiwan) 06 (家宽) - xiaohe
-  server: wwbqwqqnlyydssc.cfooov.xyz
-  port: 39817
-  udp: true
-  type: vless
-  uuid: 6dbb8854-17a5-4684-b930-c11f022975ec
-  flow: xtls-rprx-vision
-  tls: true
-  reality-opts:
-    public-key: uzaav8KrDeu1P9qdg6fDfxmq9Z6vV6a-WVPTWX1zIj4
-    short-id: 0044d4f490e795b8
-  servername: www.apple.com
-  client-fingerprint: chrome
-- name: 🇺🇸 美国 (United States) 07 (家宽) - xiaohe
-  server: 178.95.170.115
-  port: 2087
-  udp: true
-  type: vless
-  uuid: bf443e4a-aa9e-4509-abf0-d0f6828d57be
-  network: ws
-  ws-opts:
-    path: /4bc027a44532
-- name: 🇭🇰 中国香港 (Hong Kong) 08 (家宽) - xiaohe
-  server: hk02.xn--9kq85xcu6b.com
-  port: 65534
-  udp: true
-  type: hysteria2
-  password: 45dae7e6-4573-4e6b-a1f3-57b3bbaf990d
-  sni: 127.0.0.1
-  skip-cert-verify: true
 proxy-groups:
 - name: PROXIES
   type: select
@@ -92,11 +73,9 @@ proxy-groups:
   - 🇺🇸 美国 (United States) 01 (家宽) - xiaohe
   - 🇺🇸 美国 (United States) 02 (家宽) - xiaohe
   - 🇹🇼 中国台湾 (Taiwan) 03 (家宽) - xiaohe
-  - 🇭🇰 中国香港 (Hong Kong) 04 (家宽) - xiaohe
+  - 🇹🇼 中国台湾 (Taiwan) 04 (家宽) - xiaohe
   - 🇭🇰 中国香港 (Hong Kong) 05 (家宽) - xiaohe
-  - 🇹🇼 中国台湾 (Taiwan) 06 (家宽) - xiaohe
-  - 🇺🇸 美国 (United States) 07 (家宽) - xiaohe
-  - 🇭🇰 中国香港 (Hong Kong) 08 (家宽) - xiaohe
+  - 🇭🇰 中国香港 (Hong Kong) 06 (家宽) - xiaohe
 - name: AUTO
   type: url-test
   url: https://www.gstatic.com/generate_204
@@ -105,10 +84,8 @@ proxy-groups:
   - 🇺🇸 美国 (United States) 01 (家宽) - xiaohe
   - 🇺🇸 美国 (United States) 02 (家宽) - xiaohe
   - 🇹🇼 中国台湾 (Taiwan) 03 (家宽) - xiaohe
-  - 🇭🇰 中国香港 (Hong Kong) 04 (家宽) - xiaohe
+  - 🇹🇼 中国台湾 (Taiwan) 04 (家宽) - xiaohe
   - 🇭🇰 中国香港 (Hong Kong) 05 (家宽) - xiaohe
-  - 🇹🇼 中国台湾 (Taiwan) 06 (家宽) - xiaohe
-  - 🇺🇸 美国 (United States) 07 (家宽) - xiaohe
-  - 🇭🇰 中国香港 (Hong Kong) 08 (家宽) - xiaohe
+  - 🇭🇰 中国香港 (Hong Kong) 06 (家宽) - xiaohe
 rules:
 - MATCH,PROXIES
