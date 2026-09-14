@@ -5,20 +5,16 @@ mode: rule
 log-level: info
 proxies:
 - name: 🇺🇸 美国 (United States) 01 (家宽) - xiaohe
-  server: 188.114.96.3
-  port: 2087
+  server: 104.18.39.218
+  port: 80
   udp: true
   type: vless
-  uuid: 756e8f39-04e8-436d-b5c6-905d37d9562c
-  tls: true
-  servername: Ez-98919A.MOtoRicb.Workers.DeV
-  skip-cert-verify: false
-  client-fingerprint: chrome
+  uuid: 47fcef29-ab4e-4aa6-932b-d95a18f28a4e
   network: ws
   ws-opts:
-    path: /eyJqdW5rIjoiR1BxUFhYR0w1TlBLMTRsIiwicHJvdG9jb2wiOiJ2bCIsIm1vZGUiOiJwcm94eWlwIiwicGFuZWxJUHMiOltdfQ
+    path: /
     headers:
-      Host: ez-98919a.motoricb.workers.dev
+      Host: 8nj2r.2k8t.f88.hh.vavava.kdns.fr
 - name: 🇺🇸 美国 (United States) 02 (家宽) - xiaohe
   server: 178.95.170.98
   port: 2087
@@ -28,21 +24,6 @@ proxies:
   network: ws
   ws-opts:
     path: /4bc027a44532
-- name: 🇺🇸 美国 (United States) 03 (家宽) - xiaohe
-  server: 104.21.14.116
-  port: 443
-  udp: true
-  type: vless
-  uuid: 566c0473-382e-aabb-c62a-f5bb00000000
-  tls: true
-  servername: ez-4b5fd4.appelidmymat.workers.dev
-  skip-cert-verify: false
-  client-fingerprint: chrome
-  network: ws
-  ws-opts:
-    path: /sync
-    headers:
-      Host: ez-4b5fd4.appelidmymat.workers.dev
 proxy-groups:
 - name: PROXIES
   type: select
@@ -50,7 +31,6 @@ proxy-groups:
   - AUTO
   - 🇺🇸 美国 (United States) 01 (家宽) - xiaohe
   - 🇺🇸 美国 (United States) 02 (家宽) - xiaohe
-  - 🇺🇸 美国 (United States) 03 (家宽) - xiaohe
 - name: AUTO
   type: url-test
   url: https://www.gstatic.com/generate_204
@@ -58,6 +38,5 @@ proxy-groups:
   proxies:
   - 🇺🇸 美国 (United States) 01 (家宽) - xiaohe
   - 🇺🇸 美国 (United States) 02 (家宽) - xiaohe
-  - 🇺🇸 美国 (United States) 03 (家宽) - xiaohe
 rules:
 - MATCH,PROXIES
