@@ -10,7 +10,7 @@ proxies:
   udp: true
   type: trojan
   password: BxceQaOe
-  sni: t.me%252fripaojiedian
+  sni: t.me%2fripaojiedian
   skip-cert-verify: true
 proxy-groups:
 - name: PROXIES
